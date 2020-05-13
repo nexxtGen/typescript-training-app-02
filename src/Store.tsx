@@ -1,16 +1,5 @@
 import React from 'react';
-import { JsxEmit } from 'typescript';
-import { statement } from '@babel/template';
-
-interface IState {
-  episodes: [];
-  favourites: [];
-}
-
-interface IAction {
-  type: string;
-  payload: any;
-}
+import { IAction, IState } from './interfaces';
 
 const initialState: IState = {
   episodes: [],
@@ -23,6 +12,11 @@ const reducer = (state: IState, action: IAction) => {
   switch (action.type) {
     case 'FETCH_DATA':
       return { ...state, episodes: action.payload };
+    case 'ADD_FAV':
+      return {
+        ...state,
+        favourites: [...state.favourites, action.payload]
+      };
     default:
       return state;
   }

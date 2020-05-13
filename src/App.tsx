@@ -1,5 +1,7 @@
 import React from 'react';
 import { Store } from './Store';
+import './index.css';
+import { IAction, IEpisode } from './interfaces';
 
 const App = (): JSX.Element => {
   const { state, dispatch } = React.useContext(Store);
@@ -15,15 +17,47 @@ const App = (): JSX.Element => {
     const dataJSON = await data.json();
     return dispatch({
       type: 'FETCH_DATA',
-      payload: dataJSON
+      payload: dataJSON._embedded.episodes
     });
   };
+
+  const toggleFavAction = (episode: IEpisode): IAction =>
+    dispatch({
+      type: 'ADD_FAV',
+      payload: episode
+    });
 
   console.log(state);
   return (
     <React.Fragment>
-      <h1>Rick and Morty</h1>
-      <p>Pick your favourite episode!!</p>
+      <header className='header'>
+        <h1>Rick and Morty</h1>
+        <p>Pick your favourite episode!</p>
+      </header>
+      <section className='episode-layout'>
+        {state.episodes.map((item: IEpisode) => {
+          return (
+            <section key={item.id} className='episode-box'>
+              {item.image && (
+                <img
+                  src={item.image.medium}
+                  alt={`Rick and Mort ${item.name}`}
+                />
+              )}
+
+              <div>{item.name}</div>
+              <section>
+                <div>
+                  Season: {item.season} Number: {item.number}
+                </div>
+                <button type='button' onClick={() => toggleFavAction(item)}>
+                  Fav{' '}
+                </button>
+              </section>
+            </section>
+          );
+        })}
+      </section>
     </React.Fragment>
   );
 };
